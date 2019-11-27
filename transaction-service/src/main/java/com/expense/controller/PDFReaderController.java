@@ -16,19 +16,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-
-import cm.nci.pdf.PdfDetails;
+import org.thymeleaf.exceptions.TemplateInputException;
 
 import com.expense.request.CategoryListRequest;
-import com.expense.request.DisplayDetailsRequest;
-import com.expense.request.ExpenseCategory;
 import com.expense.request.LoginForm;
 import com.expense.request.SubmitExpenseRequest;
 import com.expense.service.LoginService;
 import com.expense.service.TransactionService;
+
+import cm.nci.pdf.PdfDetails;
 
 @Controller
 public class PDFReaderController {
@@ -40,20 +38,11 @@ public class PDFReaderController {
 	LoginService loginService;
 
 	@RequestMapping("/details")
-	public String readPdf(
-			Model model,
-			@RequestParam(value = "file", required = true) MultipartFile file,
-			@RequestParam(value = "phoneNumber", required = true) String phoneNumber) {
+	public String readPdf(Model model, @RequestParam(value = "file", required = true) MultipartFile file,
+			@RequestParam(value = "phoneNumber", required = true) String phoneNumber) throws Exception {
 		List<PdfDetails> displayDetailsRequest = new ArrayList<PdfDetails>();
-		List<String> categoryList = transactionService
-				.getCategories(phoneNumber);
-		try {
+		List<String> categoryList = transactionService.getCategories(phoneNumber);
 			displayDetailsRequest = transactionService.readPdfFile(file);
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		model.addAttribute("displayDetailsRequest", displayDetailsRequest);
 		model.addAttribute("categoryList", categoryList);
@@ -62,8 +51,7 @@ public class PDFReaderController {
 	}
 
 	@RequestMapping(value = "/checkUser", method = RequestMethod.POST)
-	public String confirm(
-			@ModelAttribute(name = "loginForm") LoginForm loginForm, Model model) {
+	public String confirm(@ModelAttribute(name = "loginForm") LoginForm loginForm, Model model) {
 
 		boolean userIsPresent = loginService.userIsPresent(loginForm);
 
@@ -80,8 +68,7 @@ public class PDFReaderController {
 	}
 
 	@RequestMapping(value = "/newUser", method = RequestMethod.POST)
-	public String newUser(
-			@ModelAttribute(name = "loginForm") LoginForm loginForm, Model model) {
+	public String newUser(@ModelAttribute(name = "loginForm") LoginForm loginForm, Model model) {
 
 		// loginService.saveNewUser(loginForm);
 
@@ -96,8 +83,7 @@ public class PDFReaderController {
 	}
 
 	@RequestMapping(value = "/addAccount", method = RequestMethod.POST)
-	public String addAccount(
-			@ModelAttribute(name = "loginForm") LoginForm loginForm, Model model) {
+	public String addAccount(@ModelAttribute(name = "loginForm") LoginForm loginForm, Model model) {
 
 		loginService.saveNewUser(loginForm);
 		model.addAttribute("phoneNumber", loginForm.getPhoneNumber());
@@ -107,9 +93,7 @@ public class PDFReaderController {
 	}
 
 	@RequestMapping(value = "/addOther", method = RequestMethod.POST)
-	public String addOther(
-			@RequestParam(value = "phoneNumber", required = true) String phoneNumber,
-			Model model) {
+	public String addOther(@RequestParam(value = "phoneNumber", required = true) String phoneNumber, Model model) {
 
 		model.addAttribute("phoneNumber", phoneNumber);
 
@@ -117,22 +101,20 @@ public class PDFReaderController {
 
 	}
 
-	@RequestMapping(value = "/addNewCategory", method = RequestMethod.POST)
-	public String addNewCategory(
-			@ModelAttribute(name = "categoryListRequest") CategoryListRequest categoryListRequest ,
+	@PostMapping(value = "/addNewCategory")
+	public String addNewCategory(@ModelAttribute(name = "categoryListRequest") CategoryListRequest categoryListRequest,
 			Model model) {
-		
+
 		transactionService.addNewCategory(categoryListRequest);
 
-		//model.addAttribute("phoneNumber", phoneNumber);
+		// model.addAttribute("phoneNumber", phoneNumber);
 
 		return "addCategory";
 
 	}
 
 	@GetMapping("/submit")
-	public String submit(HttpServletRequest request,
-			SubmitExpenseRequest submitExpenseRequest) {
+	public String submit(HttpServletRequest request, SubmitExpenseRequest submitExpenseRequest) {
 		submitExpenseRequest.setDate("2019.11.05");
 		Map<String, String> details = new HashMap<String, String>();
 		details.put("clothes", "2.00");
@@ -149,6 +131,12 @@ public class PDFReaderController {
 	public String login() {
 		return "login";
 	}
+	
+	// Login form
+		@GetMapping("/demo")
+		public String demo() {
+			return "demo";
+		}
 
 	// Login form with error
 	@GetMapping("/addOther")
@@ -163,8 +151,8 @@ public class PDFReaderController {
 	 * @ResponseBody public void submit() {
 	 * 
 	 * SubmitExpenseRequest submitExpenseRequest = new SubmitExpenseRequest();
-	 * submitExpenseRequest.setDate("2019.11.05"); Map<String, String> details =
-	 * new HashMap<String, String>(); details.put("clothes", "2.00");
+	 * submitExpenseRequest.setDate("2019.11.05"); Map<String, String> details = new
+	 * HashMap<String, String>(); details.put("clothes", "2.00");
 	 * submitExpenseRequest.setDetails(details);
 	 * 
 	 * System.out.println(submitExpenseRequest);

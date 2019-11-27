@@ -8,47 +8,44 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "AccountDetails" ,schema="nci01")
-public class AccountDetails implements Serializable{
+@Table(name = "AccountDetails", schema = "nci01")
+public class AccountDetails implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1384368707692197314L;
-	
+
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotNull
 	@Column(name = "month_of_transaction")
 	private String month;
-	
+
 	@NotNull
 	@Column(name = "salary")
 	private String salary;
-	
+
 	@NotNull
 	@Column(name = "threshold_expense")
 	private String thresholdExpense;
-	
+
 	@OneToOne(fetch = FetchType.LAZY)
 	@MapsId
 	@NotNull
-    private UserDetails userDetails;
-	
-		
-	public AccountDetails() {}
-	 
-    
+	private UserDetails userDetails;
+
+	public AccountDetails() {
+	}
 
 	public Long getId() {
 		return id;
@@ -78,28 +75,18 @@ public class AccountDetails implements Serializable{
 		this.thresholdExpense = thresholdExpense;
 	}
 
-
-
 	public UserDetails getUserDetails() {
 		return userDetails;
 	}
-
-
 
 	public void setUserDetails(UserDetails userDetails) {
 		this.userDetails = userDetails;
 	}
 
-
-
 	@Override
 	public String toString() {
-		return "AccountDetails [id=" + id + ", month=" + month + ", salary="
-				+ salary + ", thresholdExpense=" + thresholdExpense
-				+ ", userDetails=" + userDetails + "]";
+		return "AccountDetails [id=" + id + ", month=" + month + ", salary=" + salary + ", thresholdExpense="
+				+ thresholdExpense + ", userDetails=" + userDetails + "]";
 	}
-
-	
-	
 
 }

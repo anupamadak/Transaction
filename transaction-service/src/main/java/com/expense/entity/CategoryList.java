@@ -10,7 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -18,21 +17,20 @@ import javax.validation.constraints.NotNull;
 
 import com.expense.entity.util.StringListConverter;
 
-
 @Entity
-@Table(name = "categoryList" ,schema="nci01")
+@Table(name = "categoryList", schema = "nci01")
 public class CategoryList implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2915661892771059506L;
-	
+
 	@Id
 	@Column(name = "categoryId")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name = "category")
 	@Convert(converter = StringListConverter.class)
 	private List<String> category;
@@ -40,7 +38,7 @@ public class CategoryList implements Serializable {
 	@OneToOne(fetch = FetchType.LAZY)
 	@MapsId
 	@NotNull
-    private UserDetails userDetails;
+	private UserDetails userDetails;
 
 	public Long getId() {
 		return id;
@@ -62,5 +60,4 @@ public class CategoryList implements Serializable {
 		this.userDetails = userDetails;
 	}
 
-	
 }
